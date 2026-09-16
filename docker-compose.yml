@@ -1,0 +1,9 @@
+# Minimal self-hosting setup: `cp .env.example .env`, fill it in, then `docker compose up -d --build`.
+services:
+  onyx:
+    build: .
+    env_file: .env
+    volumes:
+      # Sessions, channel->repo bindings and the usage log survive restarts and rebuilds.
+      - ./data:/app/data
+    restart: unless-stopped

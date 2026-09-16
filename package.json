@@ -1,0 +1,53 @@
+{
+  "name": "onyx",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Self-hostable Discord coding agent: plan, approve, and ship multi-file GitHub pull requests with any model on OpenRouter.",
+  "keywords": [
+    "discord-bot",
+    "coding-agent",
+    "openrouter",
+    "github",
+    "llm",
+    "self-hosted"
+  ],
+  "license": "MIT",
+  "author": "TheDLCrimson",
+  "homepage": "https://github.com/TheDLCrimson/Onyx#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/TheDLCrimson/Onyx.git"
+  },
+  "bugs": {
+    "url": "https://github.com/TheDLCrimson/Onyx/issues"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "packageManager": "pnpm@10.14.0",
+  "main": "dist/index.js",
+  "scripts": {
+    "dev": "ts-node src/index.ts",
+    "build": "tsc",
+    "start": "node dist/index.js",
+    "test": "vitest run",
+    "test:integration": "vitest run --config vitest.integration.config.ts",
+    "format": "prettier --write \"src/**/*.{ts,js,json}\"",
+    "format:check": "prettier --check \"src/**/*.{ts,js,json}\""
+  },
+  "dependencies": {
+    "@octokit/rest": "^22.0.1",
+    "diff": "^9.0.0",
+    "discord.js": "^14.26.3",
+    "dotenv": "^17.4.2",
+    "openai": "^6.34.0"
+  },
+  "devDependencies": {
+    "@types/diff": "^8.0.0",
+    "@types/node": "^25.6.0",
+    "prettier": "^3.8.3",
+    "ts-node": "^10.9.2",
+    "typescript": "^6.0.3",
+    "vitest": "^4.1.5"
+  }
+}
