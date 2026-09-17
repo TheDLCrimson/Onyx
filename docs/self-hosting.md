@@ -214,7 +214,28 @@ tool returned the wrong thing or the model misread it.
 `DEBUG=cache` does the same for prompt-cache metrics.
 
 **TLS errors behind a corporate proxy or antivirus (`UNABLE_TO_VERIFY_LEAF_SIGNATURE`).**
-Set `NODE_OPTIONS=--use-system-ca` so Node trusts the operating system's certificate store.
+Something is intercepting HTTPS, and Node does not trust the certificate it is handed.
+Running outside Docker, set `NODE_OPTIONS=--use-system-ca` so Node trusts the operating system's certificate store.
+
+That flag does nothing inside the container.
+The image is Linux and cannot see your host's certificate store, so the proxy's root CA has to be mounted in and pointed at explicitly:
+
+```yaml
+services:
+  onyx:
+    volumes:
+      - ./data:/app/data
+      - ./proxy-ca.pem:/certs/proxy-ca.pem:ro
+    environment:
+      NODE_EXTRA_CA_CERTS: /certs/proxy-ca.pem
+```
+
+Export the intercepting certificate from your browser, or on Windows from `certmgr.msc`, as Base-64 encoded X.509 and save it as `proxy-ca.pem` next to `docker-compose.yml`.
+
+**The container restarts in a loop and the bot never comes online.**
+Run `docker compose logs` and look for `[fatal] could not log in to Discord`.
+That line carries the reason, usually a rejected `DISCORD_TOKEN` or the TLS problem above.
+Onyx exits with a non-zero status when it cannot log in, so `restart: unless-stopped` will keep retrying until the cause is fixed.
 
 ## Updating
 
