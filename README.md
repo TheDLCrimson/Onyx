@@ -16,26 +16,44 @@ You bring your own Discord bot, OpenRouter key, and GitHub token.
 
 ## What a session looks like
 
-```
-You:  /feature add a feedback button to the homepage
-Onyx: 🧠 Plan in progress - add a feedback button to the homepage
-      🔧 List src/pages … 🔧 Read src/pages/HomePage.tsx …
-Onyx: I found the homepage in src/pages/HomePage.tsx.
-      Should the feedback button open (a) a modal or (b) a link to a form?
-You:  a modal, bottom right corner
-Onyx: 📋 Plan ready
-      1. Create src/components/FeedbackButton.tsx
-      2. Add the modal and its styles
-      3. Render it on HomePage.tsx
-      [✅ Run] [✏️ Revise] [❌ Cancel]
-You:  (clicks ✅ Run)
-Onyx: ☑ progress checklist, live-updated
-      📎 Opened PR #42 - https://github.com/you/your-app/pull/42
-      ✅ Build passed (tsc) · ✅ Verification: execution matched the plan
-```
+A real `/feature` run, building a terminal snake game in a sandbox repo.
 
-You review and merge the pull request on GitHub as usual.
-Follow-ups like `/refine make the button purple` land on the same pull request.
+**You describe what you want. Onyx reads the repo and proposes a plan, then waits.**
+
+![Onyx posts a plan for a terminal snake game: the files it will create, gameplay features, controls, and the package.json change, with Run, Revise and Cancel buttons underneath](docs/images/plan.png)
+
+Nothing is written until you click **Run**. **Revise** sends it back with notes; **Cancel** drops it.
+
+**It asks rather than assumes.**
+
+[![Onyx lists six options for making the game visually distinctive and asks which to include; the user replies "all please"](docs/images/clarify.png)](docs/images/clarify.png)
+
+**After you approve, it writes the files and opens a pull request.**
+
+![A live checklist showing four files created and package.json updated, followed by a link to the pull request Onyx opened](docs/images/execute.png)
+
+The checklist is one Discord message, edited in place as the run progresses.
+The branch and pull request are created on the first successful write, so a cancelled run leaves nothing behind.
+
+**The pull request describes itself.**
+
+Onyx writes the body as it goes, one section per file, each with the prompt that produced it and what the file actually does.
+
+![A pull request body written by Onyx: a heading for projects/snake/game.ts, the prompt that produced it, and bullets describing the data types, initialisation, physics, direction queueing and speed scaling it implements](docs/images/pr-body.png)
+
+**Then it checks its own work.**
+
+![The Verification section of the same pull request: Result Match, with notes confirming all four planned files were created, the package.json script was added, and all seven visual features are accounted for](docs/images/verification.png)
+
+A second model compares the approved plan against what actually changed and records the verdict on the pull request.
+When that comparison cannot be made it reports "not checked" rather than inventing a verdict.
+
+**`/refine` makes follow-up changes on the same pull request.**
+
+[![Onyx diagnoses two bugs from a plain-language report: wall collision should wrap using modulo, and buffered raw-mode keypresses leak into the play-again prompt](docs/images/refine.png)](docs/images/refine.png)
+
+Onyx also clones the branch after each run and checks that it still builds, putting any errors in the pull request body behind an **Auto-fix** button.
+You review and merge on GitHub as usual.
 
 ## Features
 
