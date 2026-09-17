@@ -8,6 +8,7 @@ import { acceptRepoInvitations, getBotLogin } from "./services/github";
 import { buildInviteUrl } from "./utils/invite";
 import { commandData } from "./commands";
 import { restoreRunningAgents } from "./runtime/restoreAgents";
+import { loginOrExit } from "./utils/startup";
 
 assertEnv();
 loadBindings();
@@ -91,11 +92,14 @@ client.once(Events.ClientReady, async () => {
 // under Node's default policy, dropping every channel's session. Log loudly
 // and keep serving; uncaught exceptions still exit so the container restarts.
 process.on("unhandledRejection", (reason) => {
-  console.error("[fatal] unhandled promise rejection:", reason);
+  console.error("[error] unhandled promise rejection (still serving):", reason);
 });
 process.on("uncaughtException", (error) => {
   console.error("[fatal] uncaught exception — exiting:", error);
   process.exit(1);
 });
 
-void client.login(process.env.DISCORD_TOKEN);
+// Exits non-zero on failure. A logged-but-unhandled login rejection would let
+// the event loop drain and exit 0, which every orchestrator reads as a clean
+// stop — so a bot that never connects would restart forever, silently.
+void loginOrExit(client, process.env.DISCORD_TOKEN);
